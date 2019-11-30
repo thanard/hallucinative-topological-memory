@@ -6,12 +6,14 @@ The agent can apply a small displacement on the green block. If the block
 is close to the wall it cannot go through the wall but it will slide along
 the wall.
 """
-from rllab.envs.mujoco.mujoco_env import MujocoEnv
 import numpy as np
-from rllab.core.serializable import Serializable
 import scipy.misc
 import time
 import argparse
+
+from rllab.core.serializable import Serializable
+from PIL import Image
+from rllab.envs.mujoco.mujoco_env import MujocoEnv
 
 # From xml file & same order
 geom_size = 2 * np.array([[.8, .8, .1],
@@ -20,6 +22,7 @@ geom_size = 2 * np.array([[.8, .8, .1],
 idx = {"table": 0,
        "obj1": 1,
        "obs1": 2}
+
 
 class BlockMoveEnvRandomized(MujocoEnv, Serializable):
     global FILE
@@ -51,8 +54,8 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
         :return: True if any two objects overlap, False otherwise.
         """
         for i in range(len(geom_size)):
-            for j in range(i+1, len(geom_size)):
-                if np.all(np.abs(pos[j] - pos[i]) + 1e-6 < np.abs(geom_size[j] + geom_size[i])/2):
+            for j in range(i + 1, len(geom_size)):
+                if np.all(np.abs(pos[j] - pos[i]) + 1e-6 < np.abs(geom_size[j] + geom_size[i]) / 2):
                     return True
         return False
 
@@ -63,9 +66,9 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
         :param act: displacement applied to Block (obj1).
         :return: a clipped action that avoids collision into Wall (obs1).
         """
-        min_distance = np.abs(geom_size[idx["obj1"]] + geom_size[idx["obs1"]])/2
+        min_distance = np.abs(geom_size[idx["obj1"]] + geom_size[idx["obs1"]]) / 2
         curr_distance = pos[idx["obj1"]][:2] + act - pos[idx["obs1"]][:2]
-        change_act = np.zeros(2) # say x - k
+        change_act = np.zeros(2)  # say x - k
         # Find x
         for i in range(2):
             k = act[i]
@@ -84,7 +87,7 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
                     # max possible x is -c-d
                     d = min_distance[i]
                     if c <= - d + 1e-6:
-                        change_act[i] = (-c-d) - k
+                        change_act[i] = (-c - d) - k
                     else:
                         change_act[i] = np.inf
                 else:
@@ -95,7 +98,7 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
                     # Thus, x + c >= d
                     # max possible x is d-c
                     if -c <= -d + 1e-6:
-                        change_act[i] = (d-c) - k
+                        change_act[i] = (d - c) - k
                     else:
                         change_act[i] = np.inf
         min_idx = np.argmin(np.abs(change_act))
@@ -115,8 +118,8 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
         loc_obs = (table_size - obj1_size)[:2]
         action = \
             np.clip(act,
-                    -loc_obs/2 - pos[idx["obj1"]][:2],
-                    loc_obs/2 - pos[idx["obj1"]][:2]
+                    -loc_obs / 2 - pos[idx["obj1"]][:2],
+                    loc_obs / 2 - pos[idx["obj1"]][:2]
                     )
         return action
 
@@ -147,7 +150,7 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
         obs += a
         return self.reset(init_state=obs), action
 
-    def get_object(self, to_remove=("obj1", ), config=None):
+    def get_object(self, to_remove=("obj1",), config=None):
         state = self.get_current_obs()
         keep_states = {}
         # Removing objects
@@ -184,17 +187,17 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
         while init_state is None or self.detect_contact(init_state):
             init_state = np.zeros_like(geom_size)
             init_state[idx["obj1"], :2] = (np.random.rand(2) - .5) * loc_obj
-            init_state[idx["obj1"], 2] = (table_z + obj1_size[2])/2
+            init_state[idx["obj1"], 2] = (table_z + obj1_size[2]) / 2
             # Avoiding too close to boundary and cannot push up when making contact
-            init_state[idx["obs1"], :2] = (np.random.rand(2) - .5) * (loc_obs - 2*obj1_size[:2])
-            init_state[idx["obs1"], 2] = (table_z + obs1_size[2])/2
+            init_state[idx["obs1"], :2] = (np.random.rand(2) - .5) * (loc_obs - 2 * obj1_size[:2])
+            init_state[idx["obs1"], 2] = (table_z + obs1_size[2]) / 2
             if keep_obs:
                 state = self.get_current_obs()
                 init_state[idx["obs1"]] = state[idx["obs1"]].copy()
 
         # Cap init state to be in range.
-        init_state[idx["obj1"], :2] = np.clip(init_state[idx["obj1"], :2], -loc_obj/2, loc_obj/2)
-        init_state[idx["obs1"], :2] = np.clip(init_state[idx["obs1"], :2], -loc_obs/2, loc_obs/2)
+        init_state[idx["obj1"], :2] = np.clip(init_state[idx["obj1"], :2], -loc_obj / 2, loc_obj / 2)
+        init_state[idx["obs1"], :2] = np.clip(init_state[idx["obs1"], :2], -loc_obs / 2, loc_obs / 2)
 
         init_pos = (init_state - self.model.body_pos)[1:, :].reshape(-1)
         full_state = np.zeros((1, 6 * 4))
@@ -254,9 +257,6 @@ if __name__ == "__main__":
             img = scipy.misc.imresize(img, (64, 64, 3), interp='nearest')
             data = []
             while True:
-                if env.detect_contact(env.get_current_obs()):
-                    import ipdb
-                    ipdb.set_trace()
                 action = np.random.normal(
                     loc=0,
                     scale=0.05,
@@ -267,7 +267,6 @@ if __name__ == "__main__":
                 label = {'state': s_next, 'action': action}
                 if n_contexts > 1:
                     img = np.concatenate([img, context], axis=2)
-                    from PIL import Image
                     new_im = Image.fromarray(context)
                     new_im.save("context.png")
                 data.append((img, label))
@@ -282,6 +281,7 @@ if __name__ == "__main__":
     if args.test:
         fname = 'data/test_context_%d_sharper' % n_contexts
     else:
-        fname = 'data/randact_traj_length_%d_n_trials_%d_n_contexts_%d_sharper.npy' % (args.length, n_trials, n_contexts)
+        fname = 'data/randact_traj_length_%d_n_trials_%d_n_contexts_%d_sharper.npy' % (
+            args.length, n_trials, n_contexts)
     np.save(fname, all_data)
     print("took {} seconds".format(total))
