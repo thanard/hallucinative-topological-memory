@@ -110,7 +110,7 @@ kwargs['eval_hp'] = {
 kwargs['savepath'] = os.path.join(args.savepath, args.prefix)
 savepath = kwargs['savepath']
 if not os.path.exists(savepath):
-    os.mkdir(savepath)
+    os.makedirs(savepath)
 
 # Save kwargs
 with open('%s/params.json' % savepath, 'w') as fp:
