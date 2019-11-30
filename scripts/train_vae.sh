@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 python main.py \
---e_type cnn-3-32-64-128-256-512 \
---d_type cnn-512-256-128-64-32-3 \
+--e_arch cnn-3-32-64-128-256-512 \
+--d_arch cnn-512-256-128-64-32-3 \
 --z_dim 10 \
 -conditional \
 --n_epochs 200 \
