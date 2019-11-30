@@ -279,6 +279,8 @@ if __name__ == "__main__":
     total = time.time() - start
     print("number of trajectories: %d" % (len(all_data)))
     print("total sample size: %d" % (n_samples))
+    if not os.path.exists('data'):
+        os.mkdir('data')
     if args.test:
         fname = 'data/test_context_%d_sharper' % n_contexts
     else:
