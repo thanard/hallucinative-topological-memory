@@ -6,6 +6,7 @@ The agent can apply a small displacement on the green block. If the block
 is close to the wall it cannot go through the wall but it will slide along
 the wall.
 """
+import os
 import numpy as np
 import scipy.misc
 import time
@@ -28,8 +29,8 @@ class BlockMoveEnvRandomized(MujocoEnv, Serializable):
     global FILE
 
     def __init__(self, *args, **kwargs):
-
-        FILE = 'env/block_dynamic_obst.xml'
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        FILE = os.path.join(dir_path, 'block_dynamic_obst.xml')
         kwargs['file_path'] = FILE
         super(BlockMoveEnvRandomized, self).__init__(*args, **kwargs)
         Serializable.quick_init(self, locals())
