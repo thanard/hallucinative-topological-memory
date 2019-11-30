@@ -26,13 +26,11 @@ parser.add_argument("--loadpath_a",
                     help="load actor parameters from path.",
                     type=str,
                     default='')
-parser.add_argument("--target", type=str, default='trainer.py')
 parser.add_argument("--data_dir", type=str,
                     default="data/randact_traj_length_20_n_trials_50_n_contexts_150.npy")
 parser.add_argument("--test_dir", type=str,
                     default="data/test_context_20.npy")
 parser.add_argument("--prefix", type=str, default=None)
-parser.add_argument("--out_dir", type=str, default=None)
 parser.add_argument("--seed", type=int, default=0)
 parser.add_argument("--n", type=int, default=1)
 
