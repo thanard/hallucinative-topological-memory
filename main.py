@@ -10,7 +10,6 @@ from utils import set_requires_grad
 from trainer import train
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-ec2", action="store_true")
 parser.add_argument("--savepath",
                     help="output path for local run.",
                     type=str,
