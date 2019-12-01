@@ -1,6 +1,8 @@
 import torch
 import numpy as np
 import torch.nn.functional as F
+import cv2
+
 from torch.autograd import Variable
 
 
@@ -82,7 +84,6 @@ def write_on_image(img, text, position="top-left"):
     :return: write text on image.
     """
     assert 0 <= img.mean() <= 1
-    import cv2
     font = cv2.FONT_HERSHEY_SIMPLEX
     if position == "top-left":
         bottomLeftCornerOfText = (2, 7)

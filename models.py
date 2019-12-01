@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from utils import stochastic_binary_layer, from_numpy_to_var, to_var, detach_var_to_numpy
+from utils import from_numpy_to_var, to_var, detach_var_to_numpy
 
 
 def get_score(cmodel, x, x_next, o_cond=None, type="exp-neg"):

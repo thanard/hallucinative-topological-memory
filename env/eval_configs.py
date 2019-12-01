@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from env.block_env import BlockMoveEnvRandomized, geom_size
+from env.block_env import BlockMoveEnvRandomized
 from dataset import get_torch_images_from_numpy
 
 test_locs = []

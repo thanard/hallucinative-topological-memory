@@ -1,7 +1,7 @@
 import numpy as np
 
 from utils import from_numpy_to_var
-
+from scripts.data_configs import n_trials, traj_length
 
 def get_torch_images_from_numpy(npy_list, conditional, normalize=True, one_image=False):
     """
@@ -24,9 +24,9 @@ def get_torch_images_from_numpy(npy_list, conditional, normalize=True, one_image
 
 def get_negative_examples(data, idx, batch_size, N, conditional):
     idx = np.tile(idx, N)
-    idx_neg = np.random.choice(50, batch_size * N)
-    t_neg = np.random.choice(20, batch_size * N)
-    o_npy = data[(idx // 50) * 50 + idx_neg, t_neg]
+    idx_neg = np.random.choice(n_trials, batch_size * N)
+    t_neg = np.random.choice(traj_length, batch_size * N)
+    o_npy = data[(idx // n_trials) * n_trials + idx_neg, t_neg]
     return get_torch_images_from_numpy(o_npy, conditional)[0]
 
 
