@@ -15,17 +15,17 @@ def get_hp(new_hp):
         "init_width": 128,
         "init_height": 128,
         "n_test_locs": 100,
-        "test_mode": "eval", # valid or eval
+        "test_mode": "eval",  # valid or eval
         "T": 501,
         "action_noise": 0.01,
-        "block_size": 0.24, # for reach-goal threshold
+        "block_size": 0.24,  # for reach-goal threshold
         ### Planning configs ###
         "replanning_every": 200,
         "n_planning_samples": 300,
         "use_edge_weight": True,
         "use_vae_samples": True,
-        "threshold_edge": 0, # TODO: currently not used
-        "threshold_shortcut": 60, # TODO: currently not used
+        "threshold_edge": 0,  # TODO: currently not used
+        "threshold_shortcut": 60,  # TODO: currently not used
         "run_inverse_model": True,
         "score_type": "exp-neg"
     }
@@ -62,7 +62,9 @@ def padding(*list):
         x.insert(0, 0)
         x.append(0)
 
-def run_planning_and_inverse_model(env, envname, hp, n_test_locs, test_data, config, test_mode, model, c_model, actor, savepath):
+
+def run_planning_and_inverse_model(env, envname, hp, n_test_locs, test_data, config, test_mode, model, c_model, actor,
+                                   savepath):
     # Finding threshold
     # TODO: auto collect this & make sure all c_type's work
     replanning = hp["replanning_every"]
@@ -83,7 +85,7 @@ def run_planning_and_inverse_model(env, envname, hp, n_test_locs, test_data, con
 
         # Generate data, Build Graph, Localize goal
         if i == 0 or test_mode == "eval":
-            #TODO: do batching to get a larger graph
+            # TODO: do batching to get a larger graph
             if using_vae_samples:
                 o_samples_npy = model.inference(context,
                                                 n_samples=n_planning_samples,
@@ -111,7 +113,7 @@ def run_planning_and_inverse_model(env, envname, hp, n_test_locs, test_data, con
             j = t % replanning
             next_way_point = find_next_way_point(
                 o_curr_pred,
-                o_samples_npy[shortest_path][min(j//10, len(shortest_path)-1):],
+                o_samples_npy[shortest_path][min(j // 10, len(shortest_path) - 1):],
                 o_goal_pred,
                 context,
                 threshold_wp,
@@ -135,13 +137,13 @@ def run_planning_and_inverse_model(env, envname, hp, n_test_locs, test_data, con
                                        ["", ""] + ["%d, %.3f" % (i, j) for i, j in zip(edge_raw, edge_weights)] + [""],
                                        position="bottom-left")
                 save_image(torch.Tensor(img_seq_np),
-                           os.path.join(savepath, 'plan_task_%d_step_%d.png' % (i, t)), nrow=len(shortest_path)+2)
+                           os.path.join(savepath, 'plan_task_%d_step_%d.png' % (i, t)), nrow=len(shortest_path) + 2)
             # Get action
             action = actor(o_curr_pred, next_o_goal, context).cpu().numpy()
-            _, _ = env.step_only(action + np.random.randn(2)*hp["action_noise"])
+            _, _ = env.step_only(action + np.random.randn(2) * hp["action_noise"])
             next_img = env.get_current_img(config)
             curr_obs = get_torch_images_from_numpy(next_img[None, :], False, one_image=True)
-        # print("Final State: %s; Goal State: %s" % (env.get_current_obs(), goal_state))
+            # print("Final State: %s; Goal State: %s" % (env.get_current_obs(), goal_state))
             import matplotlib.pyplot as plt
             if not os.path.exists(os.path.join(savepath, '%d' % i)):
                 os.makedirs(os.path.join(savepath, '%d' % i))
@@ -172,10 +174,10 @@ def execute(all_models, envname, savepath, eval_hp=None):
 
     # Set Env the viewer config
     config = {
-            "visible": False,
-            "init_width": hp["init_width"],
-            "init_height": hp["init_height"],
-            "go_fast": True
+        "visible": False,
+        "init_width": hp["init_width"],
+        "init_height": hp["init_height"],
+        "go_fast": True
     }
     env = get_env(envname)
     env.reset()
@@ -198,8 +200,7 @@ def execute(all_models, envname, savepath, eval_hp=None):
     if hp["run_inverse_model"]:
         run_inverse_model(env, config, test_data, n_test_locs, hp, actor)
 
-    total_dist, total_success, n_test_locs = run_planning_and_inverse_model(env, envname, hp, n_test_locs, test_data, config, test_mode, model, c_model, actor, savepath)
+    total_dist, total_success, n_test_locs = run_planning_and_inverse_model(env, envname, hp, n_test_locs, test_data,
+                                                                            config, test_mode, model, c_model, actor,
+                                                                            savepath)
     return total_dist, total_success, n_test_locs
-
-
-

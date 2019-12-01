@@ -3,6 +3,7 @@ import numpy as np
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+
 def from_numpy_to_var(npx, dtype='float32'):
     var = Variable(torch.from_numpy(npx.astype(dtype)))
     if torch.cuda.is_available():
@@ -10,15 +11,18 @@ def from_numpy_to_var(npx, dtype='float32'):
     else:
         return var
 
+
 def detach_var_to_numpy(t):
     if torch.cuda.is_available():
         return t.detach().cpu().numpy()
     else:
         return t.detach().numpy()
 
+
 def set_requires_grad(model, is_true):
     for param in model.parameters():
         param.requires_grad = is_true
+
 
 def reset_grad(params):
     for p in params:
@@ -26,9 +30,11 @@ def reset_grad(params):
             data = p.grad.data
             p.grad = Variable(data.new().resize_as_(data).zero_())
 
+
 def binary_to_int(x):
     width = x.shape[1]
     return x.dot(2 ** np.arange(width)[::-1]).astype(np.int32)
+
 
 def stochastic_binary_layer(x, tau=1.0):
     """
@@ -41,8 +47,10 @@ def stochastic_binary_layer(x, tau=1.0):
     out = F.gumbel_softmax(x_flat, tau=tau, hard=True)[:, 0]
     return out.view(orig_shape)
 
+
 def onehot_to_int(x):
-    return np.where(x==1)[1]
+    return np.where(x == 1)[1]
+
 
 def write_number_on_images(imgs, texts, position="top-left"):
     """
@@ -65,6 +73,7 @@ def write_number_on_images(imgs, texts, position="top-left"):
             write_on_image(trans_img, "%d" % text, position)
         imgs[i] = np.transpose(trans_img, (2, 0, 1))
 
+
 def write_on_image(img, text, position="top-left"):
     """
     Make sure to write to final images - not fed into a generator.
@@ -75,9 +84,9 @@ def write_on_image(img, text, position="top-left"):
     assert 0 <= img.mean() <= 1
     import cv2
     font = cv2.FONT_HERSHEY_SIMPLEX
-    if position=="top-left":
+    if position == "top-left":
         bottomLeftCornerOfText = (2, 7)
-    elif position=="bottom-left":
+    elif position == "bottom-left":
         bottomLeftCornerOfText = (2, 62)
     else:
         raise NotImplementedError
@@ -95,8 +104,8 @@ def write_on_image(img, text, position="top-left"):
                 fontColor,
                 lineType)
 
+
 def to_var(x, volatile=False):
     if torch.cuda.is_available():
         x = x.cuda()
     return Variable(x, volatile=volatile)
-

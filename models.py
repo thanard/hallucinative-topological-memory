@@ -42,15 +42,11 @@ def get_c_loss(model,
         positive_log_density = c_model.log_density(o, o_next, context)
 
         # Negative
-        # negative_idx, negative_t = get_idx_t(batch_size * N)
-        # negative_o, negative_c = get_torch_images_from_numpy(data[negative_idx, negative_t])
-        # negative_o_pred, _, _ = model(negative_o, negative_c)
         negative_c = context.repeat(N, 1, 1, 1)
         if o_neg is None:
             negative_o_pred = model.inference(negative_c, n_samples=1, layer_cond=False)
         else:
             negative_o_pred = model(o_neg, negative_c)[0]
-        # import ipdb; ipdb.set_trace()
         negative_log_density = c_model.log_density(o.repeat(N, 1, 1, 1), negative_o_pred, negative_c).view(N,
                                                                                                            batch_size).t()
 
@@ -59,11 +55,9 @@ def get_c_loss(model,
                                    negative_log_density - positive_log_density[:, None]],
                                   dim=1)
         if c_type == "cpc-sptm":
-            assert N == 1
             density_ratio = torch.cat([density_ratio, -positive_log_density[:, None], negative_log_density], dim=1)
         c_loss = torch.mean(log_sum_exp(density_ratio))
     elif c_type[:4] == "sptm":
-        assert N == 1
         # Positive
         positive_y_pred = c_model(o, o_next, context)
         # Negative
@@ -124,11 +118,6 @@ class Actor(nn.Module):
             self.encoder.eval()
 
         self.f = nn.Sequential(
-            # nn.Linear(2 * z_dim, 64),
-            # nn.ReLU(),
-            # nn.Linear(64, 64),
-            # nn.ReLU(),
-            # nn.Linear(64, a_dim),
             nn.Linear(z_dim * 2, 128),
             nn.BatchNorm1d(128),
             nn.LeakyReLU(.2, inplace=True),
@@ -328,8 +317,6 @@ class CPC(nn.Module):
 
 def loss_function(recon_x, x, mu, logvar,
                   mu_cond=None, logvar_cond=None, beta=1):
-    # import ipdb
-    # ipdb.set_trace()
     BCE = F.binary_cross_entropy(recon_x.view(-1, 64 * 64), x.contiguous().view(-1, 64 * 64), size_average=False)
 
     # see Appendix B from VAE paper:
@@ -359,16 +346,9 @@ class Filling(nn.Module):
     def __init__(self, num_labels, img_size):
         self.num_labels = num_labels
         self.img_size = img_size
-        # self.fill = torch.zeros(num_labels, num_labels, *img_size)
-        # if torch.cuda.is_available():
-        #     self.fill = self.fill.cuda()
-        # for i in range(num_labels):
-        #     self.fill[i, i, :, :] = 1
         super(Filling, self).__init__()
 
     def forward(self, c):
-        # import ipdb; ipdb.set_trace()
-        # return self.fill[c.type(torch.LongTensor)]
         return c.repeat(1, self.img_size[0] * self.img_size[1]).view(-1, self.num_labels, *self.img_size)
 
 
@@ -451,10 +431,6 @@ class Decoder(nn.Module):
 
         self.n_conditional_layers = n_conditional_layers
         self.conditional = conditional
-        # if self.conditional:
-        #         input_size = latent_size + num_labels
-        # else:
-        #     input_size = latent_size
         input_size = latent_size
 
         if self.arch_type == "mlp":
@@ -486,7 +462,6 @@ class Decoder(nn.Module):
                                          module=nn.ReLU(inplace=True))
                 self.main.add_module(name="ConvTranspose2d%i" % i,
                                      module=nn.ConvTranspose2d(in_size, out_size, 4, 2, 1))
-            # self.main.add_module(name="sigmoid", module=nn.Sigmoid())
             self.z_develop = nn.Sequential(
                 nn.Linear(input_size, layer_sizes[0] * self.z_dim ** 2),
                 UnFlatten(layer_sizes[0], self.z_dim, self.z_dim)
@@ -504,18 +479,8 @@ class Decoder(nn.Module):
         """
         if self.z_develop:
             z = self.z_develop(z)
-        # import ipdb; ipdb.set_trace()
         x = self.main(z)
-        # if o_cond is not None:
-        #     assert self.conditional
-        #     assert (o_cond.size() == x.size())
-        #     assert o_cond.min() >= 0 and o_cond.max() <= 1
-        #     # import ipdb
-        #     # ipdb.set_trace()
-        #     # Mask o_cond on top of x when o_cond has some values
-        #     # x = (o_cond < 1e-3).all(1, keepdim=True).repeat(1, self.n_conditional_layers, 1, 1).float() * x + o_cond
-        #     x = F.sigmoid(x + self.W * o_cond)
-        #     assert x.max() <= 1 and x.min() >= 0
+        # TODO: use o_cond to make the cvae more correct.
         x = F.sigmoid(x)
         return x
 
@@ -531,14 +496,6 @@ class VAE(nn.Module):
                  img_size=(64, 64)):
 
         super(VAE, self).__init__()
-
-        if conditional:
-            assert n_conditional_layers > 0
-
-        # assert type(encoder_layer_sizes) == list
-        assert type(latent_size) == int
-        # assert type(decoder_layer_sizes) == list
-
         self.latent_size = latent_size
         self.W = nn.Parameter(torch.rand(latent_size, latent_size))
         self.encoder = Encoder(etype, latent_size, conditional, n_conditional_layers, img_size)
@@ -564,15 +521,12 @@ class VAE(nn.Module):
     def forward(self, x, o_cond=None, determ=False):
         # Sample z from q_phi(z|x, c), then compute the mean of p_theta(x|z, c)
         # Return generated x, mu_x(z),
-        # import ipdb
-        # ipdb.set_trace()
         z, means, log_var, kwargs = self.encode(x, o_cond)
         if determ:
             recon_x = self.decoder(means, o_cond)
         else:
             recon_x = self.decoder(z, o_cond)
-        return x, means, log_var, kwargs
-        # return recon_x, means, log_var, kwargs
+        return recon_x, means, log_var, kwargs
 
     def inference(self, o_cond=None, n_samples=1, layer_cond=True):
         """
@@ -581,8 +535,6 @@ class VAE(nn.Module):
         :return: sample from learned P_theta
         """
         batch_size = n_samples if o_cond is None else n_samples * o_cond.size(0)
-        # import ipdb
-        # ipdb.set_trace()
         z = to_var(torch.randn([1, n_samples, self.latent_size])).repeat(batch_size // n_samples, 1, 1) \
             .permute(1, 0, 2).reshape(batch_size, -1)
         o_cond_rep = None

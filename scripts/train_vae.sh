@@ -11,7 +11,7 @@ python main.py \
 --N 1 \
 --seed 0 \
 --mode v \
---data_dir data/randact_traj_length_10_n_trials_10_n_contexts_10.npy \
---test_dir data/test_context_10.npy \
-#--data_dir data/randact_traj_length_20_n_trials_50_n_contexts_150.npy \
-#--test_dir data/test_context_20.npy \
+--data_dir data/randact_traj_length_10_n_trials_10_n_contexts_10_sharper.npy \
+--test_dir data/test_context_10_sharper.npy \
+#--data_dir data/randact_traj_length_20_n_trials_50_n_contexts_150_sharper.npy \
+#--test_dir data/test_context_20_sharper.npy \

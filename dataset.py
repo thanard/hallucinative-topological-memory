@@ -2,6 +2,7 @@ import numpy as np
 
 from utils import from_numpy_to_var
 
+
 def get_torch_images_from_numpy(npy_list, conditional, normalize=True, one_image=False):
     """
     :param npy_list: a list of (image, attrs) pairs
@@ -20,16 +21,16 @@ def get_torch_images_from_numpy(npy_list, conditional, normalize=True, one_image
         return o[:, :3].contiguous(), o[:, 3:].contiguous()
     return o, None
 
+
 def get_negative_examples(data, idx, batch_size, N, conditional):
     idx = np.tile(idx, N)
-    idx_neg = np.random.choice(50, batch_size*N)
-    t_neg = np.random.choice(20, batch_size*N)
-    o_npy = data[(idx//50)*50 + idx_neg, t_neg]
+    idx_neg = np.random.choice(50, batch_size * N)
+    t_neg = np.random.choice(20, batch_size * N)
+    o_npy = data[(idx // 50) * 50 + idx_neg, t_neg]
     return get_torch_images_from_numpy(o_npy, conditional)[0]
 
+
 def get_torch_actions(npy_list):
-    #TODO: hack for block domain --> should make sure the format is better for other domains
-    # act = np.array([npy_list[i, 1]['action'][1, :2].reshape(-1) for i in range(npy_list.shape[0])])
     act = np.array([npy_list[i, 1]['action'].reshape(-1) for i in range(npy_list.shape[0])])
     return from_numpy_to_var(act)
 
