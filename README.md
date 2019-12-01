@@ -5,7 +5,7 @@ Hallucinative Topological Memory (HTM) tackles the problem of <em> Visual Planni
 The environment currently consists of a Block Wall domain (see https://openreview.net/pdf?id=BkgF4kSFPB) made easy for testing zero-shot generalization.
 
 ## Set-Up
-1. Install standard ML libraries through pip/conda.
+1. Install standard ML libraries through pip/conda and Mujoco.
 2. Change file to execution mode by ```chmod +x scripts/collect-data.sh```
 2. Run ```./scripts/collect-data.sh``` to collect data.
 
