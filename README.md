@@ -2,7 +2,7 @@
 
 Hallucinative Topological Memory (HTM) learns an energy-based model based on contrastive loss and a conditional VAE model that generates samples given a context image of a new domain. It uses these hallucinated samples for nodes, and energy-based model for the connectivity to build a planning graph. HTM allows for zero-shot generalization to domain changes. 
 
-The environment consists of a Block Wall domain (see https://openreview.net/pdf?id=BkgF4kSFPB).
+The environment currently consists of a Block Wall domain (see https://openreview.net/pdf?id=BkgF4kSFPB) made easy for testing zero-shot generalization.
 
 ## Set-Up
 1. Install standard ML libraries through pip/conda.
