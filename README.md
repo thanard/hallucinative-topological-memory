@@ -10,9 +10,9 @@ The environment consists of a Block Wall domain (see https://openreview.net/pdf?
 2. Run ```./scripts/collect-data.sh``` to collect data.
 
 ## Training
-1. Change mode and run ```./scripts/train_vae.sh```.
-2. Change mode and run ```./scripts/train_actor.sh```.
-3. Change mode and run ```./scripts/train_cpc.sh```.
+1. Change to execution mode and run ```./scripts/train_vae.sh```.
+2. Change to execution mode and run ```./scripts/train_actor.sh```.
+3. Change to execution mode and run ```./scripts/train_cpc.sh```.
 
 ## Evaluation
 1. Change mode and run ```./scripts/evaluate.sh```
