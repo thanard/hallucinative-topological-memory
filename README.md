@@ -1,6 +1,6 @@
 # Hallucinative Topological Memory
 
-Hallucinative Topological Memory (HTM) learns an energy-based model based on contrastive loss and a conditional VAE model that generates samples given a context image of a new domain. It uses these hallucinated samples for nodes, and energy-based model for the connectivity to build a planning graph. HTM allows for zero-shot generalization to domain changes. 
+Hallucinative Topological Memory (HTM) tackles the problem of <em> Visual Planning </em> in which an agent learns to plan goal-directed behavior from observations of a dynamical system obtained offline, e.g., images obtained from self-supervised robot interaction. In particular, HTM learns an energy-based model based on contrastive loss and a conditional VAE model that generates samples given a context image of a new domain. It uses these hallucinated samples for nodes, and energy-based model for the connectivity to build a planning graph. HTM allows for zero-shot generalization to domain changes. 
 
 The environment currently consists of a Block Wall domain (see https://openreview.net/pdf?id=BkgF4kSFPB) made easy for testing zero-shot generalization.
 
