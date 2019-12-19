@@ -7,7 +7,7 @@ The environment currently consists of a Block Wall domain (see https://openrevie
 ## Set-Up
 1. Install standard ML libraries through pip/conda and [Mujoco](http://www.mujoco.org/).
 2. Change file to execution mode by ```chmod +x scripts/collect-data.sh```
-2. Run ```./scripts/collect-data.sh``` to collect data, or download the training and test data [here](https://drive.google.com/open?id=1KZVf4BPCgKvP_Or0l21Ssay_Cw1aOyaz).
+2. Run ```./scripts/collect-data.sh``` to collect data, or download the training and test data [here](https://drive.google.com/drive/folders/1Lj9cgkWhFUU0f6X-D2bbIu-MPhQ8rSfH?usp=sharing).
 
 ## Training
 1. Change to execution mode and run ```./scripts/train_vae.sh```.
