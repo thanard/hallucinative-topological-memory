@@ -1,0 +1,63 @@
+<mujoco>
+    <compiler angle="radian" coordinate="global" inertiafromgeom="true" meshdir="mesh" texturedir="textures" />
+    <option gravity="0 0 -9.81" integrator="Euler" iterations="20" timestep=".01" />
+
+    <default>
+        <joint armature="0.04" damping="1" limited="true" />
+        <geom conaffinity="0" condim="1" contype="0" density="10" friction=".8 .1 .1" margin="0.002" />
+    </default>
+    <worldbody>
+        <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1" directional="true" exponent="1" pos="0 0 0.0" specular=".1 .1 .1"/>
+
+        <camera name='targeting' mode='fixed' pos='0. 0. 5.'/>
+
+
+        <geom rgba="0.3 0.3 .3 1." conaffinity="1" density='0.' contype="1" condim="1" name="table" pos="0 0 0" size=".8 .8 0.1" type="plane" />
+
+
+
+        <body name="obj1">
+            <joint axis="0 0 1" damping="1.5" name="obj1_hinge" pos="0 0 0.05" range="-10.3213 10.3" type="hinge" />
+            <joint axis="1 0 0" damping="1.5" name="obj1_slidex" pos="0 0 0.05" range="-10.3213 10.3" type="slide" />
+            <joint axis="0 1 0" damping="1.5" name="obj1_slidey" pos="0 0 0.05" range="-10.3213 10.3" type="slide" />
+      
+            <geom name='b1' conaffinity="1" contype="1" pos="0 0 0.05" size="0.06 0.06 0.06" rgba=".0 .1 .6 1" type="box" />
+            <geom name='b2' conaffinity="1" contype="1" pos="0 -.12 0.05" size="0.06 0.06 0.06" rgba=".0 .1 .6 1" type="box" />
+
+            <geom name='b3' conaffinity="1" contype="1" pos="0 .0 0.05" size="0.006 0.006 0.006" rgba="1 1 0 0" type="box" />  
+            <geom name='b4' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />            
+            <geom name='b5' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+            <geom name='b6' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+            <geom name='b7' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+            <geom name='b8' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+            <geom name='b9' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+            <geom name='b10' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+            <geom name='b11' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+            <geom name='b12' conaffinity="1" contype="1" pos=".0 .0 0.05" size="0.006 0.006 0.006" rgba=".0 .1 .6 0" type="box" />
+
+            <joint axis="0 0 1" damping="1.5" name="obj2_slidex" pos=".0 .0 0" range="-10.3213 10.3" type="hinge" />
+
+        </body>
+        <body name="obs">
+            <geom name ='o1' conaffinity="1" contype="1" pos=".0 .47 0.05" rgba="0 0 0 0" size="0.06 0.3 0.07" type="box" />
+            <geom name ='o2' conaffinity="1" contype="1" pos=".0 -.47 0.05" rgba="0 0 0 0" size="0.06 0.3 0.07" type="box" />
+            <geom conaffinity="1" contype="1" name="north" pos=".0 0.8 0.05" rgba=".9 .9 .9 1" size=".9 0.06 0.07" type="box" />
+            <geom conaffinity="1" contype="1" name="south" pos=".0 -0.8 0.05" rgba=".9 .9 .9 1" size=".9 0.06 0.07" type="box" />
+            <geom conaffinity="1" contype="1" name="east" pos=".8 0. 0.05" rgba=".9 .9 .9 1" size="0.06 .9 0.07" type="box" />
+            <geom conaffinity="1" contype="1" name="west" pos="-.8 0. 0.05" rgba=".9 .9 .9 1" size="0.06 .9 0.07" type="box" />
+
+        </body>
+
+    </worldbody>
+
+    <actuator>
+
+        <motor ctrllimited="true" ctrlrange="-1 1" gear="50.0" joint="obj2_slidex"/>
+        <motor ctrllimited="true" ctrlrange="-1 1" gear="18.0" joint="obj1_slidex"/>
+        <motor ctrllimited="true" ctrlrange="-1 1" gear="18.0" joint="obj1_slidey"/>
+        <motor ctrllimited="true" ctrlrange="-1 1" gear="50.0" joint="obj1_hinge"/>
+
+    </actuator>
+
+</mujoco>
+

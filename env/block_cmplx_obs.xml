@@ -1,0 +1,67 @@
+<mujoco model="swimmer">
+  <compiler angle="degree" coordinate="local" inertiafromgeom="true" meshdir="mesh" texturedir="textures"/>
+  <option gravity="0 0 -9.81" integrator="Euler" iterations="20" timestep=".01" />
+  <default>
+    <!-- controls rope and color  -->
+      <joint armature="0.04" damping="1"/>
+      <geom conaffinity="1" condim="3" contype="1" density="10" friction=".8 .1 .1" margin="0.002" rgba="0.8 0.6 .4 1" />
+  </default>
+
+  <worldbody>
+    <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1" directional="true" exponent="1" pos="0 0 0.0" specular=".1 .1 .1"/>
+
+    <geom rgba="0.1 0.1 .1 1." conaffinity="1" density='0.' contype="1" condim="3" name="table" pos="0 0.0 0." size="2.8 2.8 0.1" type="plane" />
+
+      <body name="torso" pos="0 0 0.14">
+          <geom density="70000" fromto="0 0 0 -1 0 0" size="0.1" type="capsule" rgba="1 0 0 1" name='t'/>
+          <joint axis="0 0 1" name="rot0" pos="0 0 0" type="hinge"/>
+          <body name="tBall" pos="0 0 -.05">
+            <geom density="70000" fromto="0 0 0 0.02 0 0" size="0.01" type="capsule" rgba='1 0 0 1' />
+            <joint axis="0 0 1" name="tBallj" pos="0 0 0" type="hinge"/>
+          </body>
+          <body name="mid" pos="-1 0 0">
+            <body name="joint1" pos="0 0 .05">
+              <geom density="70000" fromto="0 0 0 0.02 0 0" size="0.01" type="capsule" rgba='1 0 0 1'/>
+              <joint axis="0 0 1" name="joint1j" pos="0 0 0" type="hinge"/>
+            </body>
+            <geom density="70000" name="m" fromto="0 0 0 -1 0 0" size="0.1" type="capsule" rgba='1 0 0 1'/>
+            <joint axis="0 0 1" limited="false" name="rot1" pos="0 0 0" type="hinge"/>
+            <body name="back" pos="-1 0 0">
+              <body name="joint2" pos="0 0 .05">
+              <geom density="70000" fromto="0 0 0 0.02 0 0" size="0.01" type="capsule" rgba='1 0 0 1' />
+              <joint axis="0 0 1" name="joint2j" pos="0 0 0" type="hinge"/>
+              </body>
+              <geom density="70000" name="b" fromto="0 0 0 -1 0 0" size="0.1" type="capsule" rgba='1 0 0 1'/>
+              <joint axis="0 0 1" name="rot2" pos="0 0 0" type="hinge"/>
+              <body name="bBall" pos="-1 0 -.06">
+                <geom density="70000" fromto="0 0 0 -.02 0 0" size="0.01" type="capsule" rgba='1 0 0 1'/>
+                <joint axis="0 0 1" name="bBallj" pos="0 0 0" type="hinge"/>
+              </body>
+            </body>
+          </body>
+      </body>
+      <body name="obj" pos='0 0 .165'>
+        <joint axis="1 0 0" damping="1.5" name="obj1_slidex" pos="0 0 0.05" range="-10.3213 10.3" type="slide" />
+        <joint axis="0 1 0" damping="1.5" name="obj1_slidey" pos="0 0 0.05" range="-10.3213 10.3" type="slide" />        
+        <geom conaffinity="1" contype="1" condim="3" pos=".0 0 0." size="0.25 0.25 0.16" rgba="0.0  1.0 0.0 1" type="box" />
+      </body>
+        <body name="north" pos = "0 2.5 .14">
+          <geom conaffinity="1" contype="1" condim="3"  pos="0. 0. 0." size="3.0 .2 0.5" rgba="0. 0. 0. 1" type="box" friction="2 2 2"/>
+        </body>
+        <body name="south" pos = ".0 -2.5 .14">
+          <geom conaffinity="1" contype="1" condim="3"  pos="0. 0. 0." size="3 .2 0.5" rgba=".0  0. 0. 1" type="box" friction="2 2 2"/>
+        </body>
+        <body name="east" pos = "2.5 0 .14">
+          <geom conaffinity="1" contype="1" condim="3"  pos="0. 0. 0." size=".2 3 0.5" rgba="0. 0. 0. 1" type="box" friction="2 2 2"/>
+        </body>
+        <body name="west" pos = "-2.5 0 .14">
+          <geom conaffinity="1" contype="1" condim="3"  pos="0. 0. 0." size=".2 3 0.5" rgba=".0  0. 0. 1" type="box" friction="2 2 2"/>
+        </body>
+  </worldbody>  
+
+  
+  <actuator>
+        <motor joint="obj1_slidex" gear="18"/>
+        <motor joint="obj1_slidey" gear="18"/>
+  </actuator>
+</mujoco>
